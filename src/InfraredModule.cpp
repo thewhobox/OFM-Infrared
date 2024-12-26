@@ -96,7 +96,7 @@ void InfraredModule::receiveIrCode()
 {
     if (IrReceiver.decode())
     {
-        if (IrReceiver.decodedIRData.protocol && IrReceiver.decodedIRData.address && IrReceiver.decodedIRData.numberOfBits)
+        if (IrReceiver.decodedIRData.protocol && IrReceiver.decodedIRData.address)
         {
             _lastReceviedCode.protocol = IrReceiver.decodedIRData.protocol;
             _lastReceviedCode.address = IrReceiver.decodedIRData.address;
@@ -119,21 +119,25 @@ void InfraredModule::receiveIrCode()
             }
             else
             {
-                logInfoP("Received IR-Code: %i/%i/%i/%i/%i/%i",
-                         IrReceiver.decodedIRData.protocol,
-                         IrReceiver.decodedIRData.address,
-                         IrReceiver.decodedIRData.command,
-                         IrReceiver.decodedIRData.numberOfBits,
-                         IrReceiver.decodedIRData.extra,
-                         IrReceiver.decodedIRData.flags);
+                // new codes need numberOfBits
+                if(IrReceiver.decodedIRData.numberOfBits)
+                {
+                    logInfoP("Received IR-Code: %i/%i/%i/%i/%i/%i",
+                            IrReceiver.decodedIRData.protocol,
+                            IrReceiver.decodedIRData.address,
+                            IrReceiver.decodedIRData.command,
+                            IrReceiver.decodedIRData.numberOfBits,
+                            IrReceiver.decodedIRData.extra,
+                            IrReceiver.decodedIRData.flags);
 
-                logIndentUp();
-                logDebugP("pressed");
-                logIndentUp();
-                processPress(_lastReceviedCode);
-                logIndentDown();
-                logIndentDown();
-                _lastReceviedTime = millis();
+                    logIndentUp();
+                    logDebugP("pressed");
+                    logIndentUp();
+                    processPress(_lastReceviedCode);
+                    logIndentDown();
+                    logIndentDown();
+                    _lastReceviedTime = millis();
+                }
             }
         }
 
